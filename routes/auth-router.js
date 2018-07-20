@@ -1,19 +1,20 @@
 const express = require("express");
 const bcrypt = require("bcrypt");
+const bodyparser = require("body-parser");
 
 const User = require("../models/user-model.js");
 
 const router = express.Router();
 
 // POST /signup
-router.post("/signup", (req, res, next) => {
+router.post("/signup", bodyparser.json(), (req, res, next) => {
   const {
     firstName,
     lastName,
     email,
-    originalPassword,
     phoneNumber,
-    gender
+    isDriver,
+    originalPassword
   } = req.body;
   if (originalPassword === "" || originalPassword.match(/[0-9]/) === null) {
     // bad password (is blank or doesn't have a number)
@@ -29,9 +30,9 @@ router.post("/signup", (req, res, next) => {
     firstName,
     lastName,
     email,
-    encryptedPassword,
     phoneNumber,
-    gender
+    encryptedPassword,
+    isDriver
   })
     .then(userDoc => {
       req.login(userDoc, () => {
