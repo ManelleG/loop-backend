@@ -29,7 +29,7 @@ const userSchema = new Schema(
       long: { type: Number }
     },
     licenseNumber: { type: String },
-    carModel: [
+    cars: [
       {
         brand: { type: String },
         model: { type: String },
