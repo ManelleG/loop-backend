@@ -12,8 +12,8 @@ const userSchema = new Schema(
       unique: true,
       match: /^.+@.+\..+$/
     },
-    phoneNumber: { type: String, required: true },
-    isDriver: { type: Boolean, required: true }, //
+    phoneNumber: { type: String, required: true, },
+    isDriver: { type: Boolean, required: true },
     encryptedPassword: { type: String },
     pictureURL: {
       type: String,
@@ -21,7 +21,7 @@ const userSchema = new Schema(
     },
     gender: {
       type: String,
-      enum: ["Homme", "Femme", "Autre"]
+      enum: ["Homme", "Femme"]
     },
     address: {
       string: { type: String },
@@ -38,8 +38,12 @@ const userSchema = new Schema(
         numberOfSeats: { type: Number }
       }
     ],
-    specificNeedsA: { type: Boolean },
-    specificNeedsB: { type: Boolean }
+    specificNeedsA: [
+      {
+        need: {type: String }
+      }
+    ],
+    specificNeedsB: { type: String }
   },
   {
     timestamps: true
