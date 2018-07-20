@@ -27,18 +27,19 @@ const userSchema = new Schema ({
     lat: { type: Number },
     long: { type: Number },
   },
-  licenseNumber:  { type: String },
-  carModel: {
-    brand: { type: String },
-    model: { type: String },
-    color: { type: String },
-    licensePlate: { type: String },
-    numberOfSeats: { type: Number },
-  },
+  licenseNumber: { type: String },
+  carModel: [
+    {
+      brand: { type: String },
+      model: { type: String },
+      color: { type: String },
+      licensePlate: { type: String },
+      numberOfSeats: { type: Number }
+    }
+  ],
   specificNeedsA: { type: Boolean},
   specificNeedsB: { type: Boolean}
-},
-{
+}, {
   timestamps: true,
 })
 

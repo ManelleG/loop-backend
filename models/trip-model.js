@@ -19,7 +19,7 @@ const tripSchema = new Schema({
     long: { type: Number },
   },
   departDate: { type: Date, required: true},
-  departTime: { type: ????, required: true},
+  departTime: { type: String, required: true},
   comment: { type: String },
   numberOfSeats: { type: Number }
 }, {
