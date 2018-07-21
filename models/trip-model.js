@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const tripSchema = new Schema({
-  userId: {
+  user: {
     type: Schema.Types.ObjectId,
     ref: "User",
     required: true
@@ -18,7 +18,7 @@ const tripSchema = new Schema({
     lat: { type: Number },
     long: { type: Number },
   },
-  departDate: { type: Date, required: true},
+  departDate: { type: String, required: true},
   departTime: { type: String, required: true},
   comment: { type: String },
   numberOfSeats: { type: Number }
