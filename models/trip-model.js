@@ -18,7 +18,7 @@ const tripSchema = new Schema({
     lat: { type: Number },
     long: { type: Number },
   },
-  departDate: { type: String, required: true},
+  departDate: { type: Date, required: true},
   departTime: { type: String, required: true},
   comment: { type: String },
   numberOfSeats: { type: Number }
