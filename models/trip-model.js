@@ -9,17 +9,21 @@ const tripSchema = new Schema({
     required: true
   },
   departAddress: {
-    string: { type: String, required: true},
-    lat: { type: Number },
-    long: { type: Number },
+    type: { type: String, default: "Point"},
+    string: { type: String },
+    coordinates: [
+      {type: Number}
+    ]
   },
   arrivalAddress: {
-    string: { type: String, required: true},
-    lat: { type: Number },
-    long: { type: Number },
+    type: { type: String, default: "Point" },
+    string: { type: String },
+    coordinates: [
+      {type: Number}
+    ]
   },
-  departDate: { type: Date, required: true},
-  departTime: { type: String, required: true},
+  departDateAndTime: { type: Date, required: true},
+  // departTime: { type: String, required: true},
   comment: { type: String },
   numberOfSeats: { type: Number }
 }, {
