@@ -7,6 +7,7 @@ const mongoose = require("mongoose");
 const logger = require("morgan");
 const path = require("path");
 const cors = require("cors");
+
 const session = require("express-session");
 const MongoStore = require("connect-mongo")(session);
 
@@ -63,5 +64,8 @@ passportSetup(app);
 
 const authRouter = require("./routes/auth-router.js");
 app.use("/api", authRouter);
+
+const tripRouter = require("./routes/trip-router.js");
+app.use("/api", tripRouter);
 
 module.exports = app;
