@@ -16,6 +16,7 @@ router.post("/signup", bodyparser.json(), (req, res, next) => {
     isDriver,
     originalPassword
   } = req.body;
+
   if (originalPassword === "" || originalPassword.match(/[0-9]/) === null) {
     // bad password (is blank or doesn't have a number)
     const err = new Error("Password can't be blank and must have a number");
