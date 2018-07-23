@@ -18,19 +18,24 @@ router.get("/trips", (req, res, next) => {
 // CURRENT USER ADD TRIP PATH ----------------------
 router.post("/trips", (req, res, next) => {
   const {startAddress,
-    startLongitude,
-    startLatitude,
+   //startLongitude,
+   //startLatitude,
     endAddress,
-    endLongitude,
-    endLatitude,
+  //endLongitude,
+  //endLatitude,
     departDate,
-    departTime,
+    departHour,
+    departMin,
     comment,
-    numberOfSeats} = req.body;
+  //numberOfSeats
+  } = req.body;
 
-  const departDateAndTime = `${departDate} ${departTime}`;
-  const startLocation = {string: startAddress, coordinates: [startLongitude, startLatitude] }
-  const endLocation = {string: endAddress, coordinates: [endLongitude, endLatitude] }
+  //Data reformating to make the data the user entered fit the user model:
+  const departDateAndTime = `${departDate} ${departHour}:${departMin}:00`;
+  //const startLocation = {string: startAddress, coordinates: [startLongitude, startLatitude] }
+  //const endLocation = {string: endAddress, coordinates: [endLongitude, endLatitude] }
+  const startLocation = {string: startAddress};
+  const endLocation = {string: endAddress}
 
   Trip.create({
     user: req.user._id,
@@ -38,7 +43,7 @@ router.post("/trips", (req, res, next) => {
     endLocation,
     departDateAndTime,
     comment,
-    numberOfSeats
+   // numberOfSeats
   })
   .then((tripDoc) => {
     res.json(tripDoc);
@@ -64,11 +69,11 @@ router.put("/trip/:id", (req, res, next) => {
   const { id } = req.params;
 
   const fields = ["startAddress",
-    "startLongitude",
-    "startLatitude",
+   // "startLongitude",
+   // "startLatitude",
     "endAddress",
-    "endLongitude",
-    "endLatitude",
+   // "endLongitude",
+   // "endLatitude",
     "departDate",
     "departTime",
     "comment",
@@ -110,27 +115,27 @@ router.delete("/trip/:id", (req, res, next) => {
     });
 })
 
-router.get("/trip/start", (req, res, next) => {
-  Trip.find({ startLocation: { $near: { $maxDistance: 100000, $geometry: { type: "Point", coordinates: [-121, 38]}}}
-   })
-   .populate({path: 'user', select: 'isDriver'})
-  .then((tripResults) => {
-    res.json(tripResults);
-  })
-  .catch((err) => {
-    next(err)
-  })
-})
+// router.get("/trip/start", (req, res, next) => {
+//   Trip.find({ startLocation: { $near: { $maxDistance: 100000, $geometry: { type: "Point", coordinates: [-121, 38]}}}
+//    })
+//    .populate({path: 'user', select: 'isDriver'})
+//   .then((tripResults) => {
+//     res.json(tripResults);
+//   })
+//   .catch((err) => {
+//     next(err)
+//   })
+// })
 
-router.get("/trip/end", (req, res, next) => {
-  Trip.find({ endLocation: { $near: { $maxDistance: 100000, $geometry: { type: "Point", coordinates: [-123, 30]}}}
-   })
-  .then((tripResults) => {
-    res.json(tripResults);
-  })
-  .catch((err) => {
-    next(err)
-  })
-})
+// router.get("/trip/end", (req, res, next) => {
+//   Trip.find({ endLocation: { $near: { $maxDistance: 100000, $geometry: { type: "Point", coordinates: [-123, 30]}}}
+//    })
+//   .then((tripResults) => {
+//     res.json(tripResults);
+//   })
+//   .catch((err) => {
+//     next(err)
+//   })
+// })
 
 module.exports = router

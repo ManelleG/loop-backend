@@ -9,18 +9,18 @@ const tripSchema = new Schema({
     required: true
   },
   startLocation: {
-    type: { type: String, default: "Point"},
+    //type: { type: String, default: "Point"},
     string: { type: String },
-    coordinates: [
-      {type: Number}
-    ]
+    // coordinates: [
+    //  {type: Number}
+    // ]
   },
   endLocation: {
-    type: { type: String, default: "Point" },
+    //type: { type: String, default: "Point" },
     string: { type: String },
-    coordinates: [
-      {type: Number}
-    ]
+    // coordinates: [
+    //  {type: Number}
+    // ]
   },
   departDateAndTime: { type: Date, required: true},
   // departTime: { type: String, required: true},
@@ -30,8 +30,8 @@ const tripSchema = new Schema({
   timestamps: true
 })
 
-tripSchema.index({startLocation: '2dsphere'})
-tripSchema.index({endLocation: '2dsphere'})
+// tripSchema.index({startLocation: '2dsphere'})
+// tripSchema.index({endLocation: '2dsphere'})
 
 const Trip = mongoose.model("Trip", tripSchema);
 
