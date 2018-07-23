@@ -27,6 +27,7 @@
     "user-model": "^0.2.0"
   },
   "devDependencies": {
+    "@types/googlemaps": "^3.30.11",
     "nodemon": "^1.12.1"
   }
 }
