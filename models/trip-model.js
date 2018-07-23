@@ -8,14 +8,14 @@ const tripSchema = new Schema({
     ref: "User",
     required: true
   },
-  departAddress: {
+  startLocation: {
     type: { type: String, default: "Point"},
     string: { type: String },
     coordinates: [
       {type: Number}
     ]
   },
-  arrivalAddress: {
+  endLocation: {
     type: { type: String, default: "Point" },
     string: { type: String },
     coordinates: [
@@ -29,6 +29,9 @@ const tripSchema = new Schema({
 }, {
   timestamps: true
 })
+
+tripSchema.index({startLocation: '2dsphere'})
+tripSchema.index({endLocation: '2dsphere'})
 
 const Trip = mongoose.model("Trip", tripSchema);
 
