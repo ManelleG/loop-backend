@@ -68,4 +68,9 @@ app.use("/api", authRouter);
 const tripRouter = require("./routes/trip-router.js");
 app.use("/api", tripRouter);
 
+// AFTER your routes -> send the Angular HTML (instead of 404)
+// app.use((req, res, next) => {
+//   res.sendFile(`${__dirname}/public/index.html`);
+// });
+
 module.exports = app;

@@ -12,14 +12,14 @@ const tripSchema = new Schema({
     type: { type: String, default: "Point"},
     string: { type: String },
     coordinates: [
-      {type: Number}
+     {type: Number}
     ]
   },
   endLocation: {
     type: { type: String, default: "Point" },
     string: { type: String },
     coordinates: [
-      {type: Number}
+     {type: Number}
     ]
   },
   departDateAndTime: { type: Date, required: true},

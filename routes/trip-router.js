@@ -23,13 +23,18 @@ router.post("/trips", (req, res, next) => {
     endLongitude,
     endLatitude,
     departDate,
-    departTime,
+    departHour,
+    departMin,
     comment,
-    numberOfSeats} = req.body;
+  //numberOfSeats
+  } = req.body;
 
-  const departDateAndTime = `${departDate} ${departTime}`;
+  //Data reformating to make the data the user entered fit the user model:
+  const departDateAndTime = `${departDate} ${departHour}:${departMin}:00`;
   const startLocation = {string: startAddress, coordinates: [startLongitude, startLatitude] }
   const endLocation = {string: endAddress, coordinates: [endLongitude, endLatitude] }
+  //const startLocation = {string: startAddress};
+  //const endLocation = {string: endAddress}
 
   Trip.create({
     user: req.user._id,
@@ -37,7 +42,7 @@ router.post("/trips", (req, res, next) => {
     endLocation,
     departDateAndTime,
     comment,
-    numberOfSeats
+   // numberOfSeats
   })
   .then((tripDoc) => {
     res.json(tripDoc);
@@ -76,11 +81,11 @@ router.put("/trip/:id", (req, res, next) => {
   const { id } = req.params;
 
   const fields = ["startAddress",
-    "startLongitude",
-    "startLatitude",
+   "startLongitude",
+   "startLatitude",
     "endAddress",
-    "endLongitude",
-    "endLatitude",
+   "endLongitude",
+   "endLatitude",
     "departDate",
     "departTime",
     "comment",
