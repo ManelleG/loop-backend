@@ -142,6 +142,9 @@ router.get("/trip/:tripId/matches", (req, res, next) => {
 
     return Trip.findNear(startCoor, endCoor, isDriver)
     .then((tripResults) => {
+      tripResults.forEach((tripDoc) => {
+        tripDoc.user.encryptedPassword = undefined;
+      })
       res.json(tripResults);
     })
   })
