@@ -5,8 +5,7 @@ const router = express.Router();
 
 // GET ALL TRIPS IN DB ------------------------------
 router.get("/trips", (req, res, next) => {
-  Trip
-  .find()
+  Trip.find()
   .then((tripResults) => {
     res.json(tripResults);
   })
@@ -59,7 +58,20 @@ router.get("/user/trips", (req, res, next) => {
   })
 })
 
-// CURRENT USER UPDATE THEIR TRIPS -------------------------
+//FIND A SPECIFIC TRIP -----------------------------------------
+router.get("/trip/:id", (req, res, next) => {
+  const { id } = req.params;
+
+  Trip.findById(id)
+    .then(() => {
+
+    })
+    .catch(() => {
+
+    })
+})
+
+// CURRENT USER UPDATE A SPECIFIC TRIPS -------------------------
 router.put("/trip/:id", (req, res, next) => {
   const { id } = req.params;
 
@@ -97,7 +109,7 @@ router.put("/trip/:id", (req, res, next) => {
   });
 })
 
-// CURRENT USER DELETE THEIR TRIPS -------------------------
+// CURRENT USER DELETE A SPECIFIC TRIPS -------------------------
 router.delete("/trip/:id", (req, res, next) => {
   const { id } = req.params;
 
@@ -110,27 +122,53 @@ router.delete("/trip/:id", (req, res, next) => {
     });
 })
 
-router.get("/trip/start", (req, res, next) => {
-  Trip.find({ startLocation: { $near: { $maxDistance: 100000, $geometry: { type: "Point", coordinates: [-121, 38]}}}
-   })
-   .populate({path: 'user', select: 'isDriver'})
-  .then((tripResults) => {
-    res.json(tripResults);
+//RETRIEVE MATCHES RELATED TO A UNIQUE TRIP ID
+router.get("/trip/find/:tripId", (req, res, next) => {
+
+  const { tripId } = req.params;
+
+  Trip.findById(tripId)
+  .then((result) => {
+    const { startLocation: {coordinates: startCoor}, endLocation: {coordinates: endCoor} } = result;
+
+    return Trip.findNear(startCoor, endCoor)
+    .then((tripResults) => {
+      res.json(tripResults);
+    })
   })
   .catch((err) => {
     next(err)
   })
 })
 
-router.get("/trip/end", (req, res, next) => {
-  Trip.find({ endLocation: { $near: { $maxDistance: 100000, $geometry: { type: "Point", coordinates: [-123, 30]}}}
-   })
-  .then((tripResults) => {
-    res.json(tripResults);
-  })
-  .catch((err) => {
-    next(err)
-  })
-})
+// router.get("/trip/:tripId/start", (req, res, next) => {
+
+//   const { tripId } = req.params;
+
+//   Trip.findById(tripId)
+//   .then((result) => {
+//     const { startLocation: {startLatitude, startLongitude} } = result;
+
+//     return Trip.find({ startLocation: { $near: { $maxDistance: 100000, $geometry: { type: "Point", coordinates: [startLongitude, startLatitude]}}}
+//     })
+//     .populate({path: 'user', select: 'isDriver'})
+//     .then((tripResults) => {
+//       res.json(tripResults);
+//     })
+//   })
+//   .catch((err) => {
+//     next(err)
+//   })
+// })
+
+// router.get("/trip/end", (req, res, next) => {
+//   Trip
+//   .then((tripResults) => {
+//     res.json(tripResults);
+//   })
+//   .catch((err) => {
+//     next(err)
+//   })
+// })
 
 module.exports = router
