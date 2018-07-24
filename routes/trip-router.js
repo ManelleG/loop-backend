@@ -3,18 +3,29 @@ const Trip = require("../models/trip-model.js");
 
 const router = express.Router();
 
-// GET ALL TRIPS IN DB ------------------------------
+// GET ALL TRIPS IN DB -----------------------------------------------------------------------
+// router.get("/trips/all", (req, res, next) => {
+//   Trip.find()
+//   .then((tripResults) => {
+//     res.json(tripResults);
+//   })
+//   .catch((err) => {
+//     next(err);
+//   });
+// });
+
+// CURRENT USER TRIPS -----------------------------------------------------------------------
 router.get("/trips", (req, res, next) => {
-  Trip.find()
+  Trip.find( {user: req.user._id} )
   .then((tripResults) => {
-    res.json(tripResults);
+    res.json(tripResults)
   })
   .catch((err) => {
     next(err);
-  });
-});
+  })
+})
 
-// CURRENT USER ADD TRIP PATH ----------------------
+// CURRENT USER ADD TRIP PATH ----------------------------------------------------------------
 router.post("/trips", (req, res, next) => {
   const {startAddress,
     startLongitude,
@@ -52,31 +63,22 @@ router.post("/trips", (req, res, next) => {
   })
 })
 
-// CURRENT USER TRIPS ---------------------------
-router.get("/user/trips", (req, res, next) => {
-  Trip.find( {user: req.user._id} )
-  .then((tripResults) => {
-    res.json(tripResults)
-  })
-  .catch((err) => {
-    next(err);
-  })
-})
 
-//FIND A SPECIFIC TRIP -----------------------------------------
+//FIND A SPECIFIC TRIP -----------------------------------------------------------------
 router.get("/trip/:id", (req, res, next) => {
   const { id } = req.params;
 
   Trip.findById(id)
-    .then(() => {
-
+  .populate({path: 'user'})
+    .then((tripDoc) => {
+      res.json(tripDoc)
     })
-    .catch(() => {
-
+    .catch((err) => {
+      next(err)
     })
 })
 
-// CURRENT USER UPDATE A SPECIFIC TRIPS -------------------------
+// UPDATE A SPECIFIC TRIPS --------------------------------------------------------------
 router.put("/trip/:id", (req, res, next) => {
   const { id } = req.params;
 
@@ -114,7 +116,7 @@ router.put("/trip/:id", (req, res, next) => {
   });
 })
 
-// CURRENT USER DELETE A SPECIFIC TRIPS -------------------------
+// CURRENT USER DELETE A SPECIFIC TRIPS ----------------------------------------------
 router.delete("/trip/:id", (req, res, next) => {
   const { id } = req.params;
 
@@ -127,16 +129,18 @@ router.delete("/trip/:id", (req, res, next) => {
     });
 })
 
-//RETRIEVE MATCHES RELATED TO A UNIQUE TRIP ID
-router.get("/trip/find/:tripId", (req, res, next) => {
+//RETRIEVE MATCHES RELATED TO A UNIQUE TRIP ID----------------------------------------
+router.get("/trip/:tripId/matches", (req, res, next) => {
 
   const { tripId } = req.params;
 
   Trip.findById(tripId)
+  .populate({path: 'user'})
   .then((result) => {
     const { startLocation: {coordinates: startCoor}, endLocation: {coordinates: endCoor} } = result;
+    const { user: {isDriver} } = result;
 
-    return Trip.findNear(startCoor, endCoor)
+    return Trip.findNear(startCoor, endCoor, isDriver)
     .then((tripResults) => {
       res.json(tripResults);
     })
@@ -145,35 +149,5 @@ router.get("/trip/find/:tripId", (req, res, next) => {
     next(err)
   })
 })
-
-// router.get("/trip/:tripId/start", (req, res, next) => {
-
-//   const { tripId } = req.params;
-
-//   Trip.findById(tripId)
-//   .then((result) => {
-//     const { startLocation: {startLatitude, startLongitude} } = result;
-
-//     return Trip.find({ startLocation: { $near: { $maxDistance: 100000, $geometry: { type: "Point", coordinates: [startLongitude, startLatitude]}}}
-//     })
-//     .populate({path: 'user', select: 'isDriver'})
-//     .then((tripResults) => {
-//       res.json(tripResults);
-//     })
-//   })
-//   .catch((err) => {
-//     next(err)
-//   })
-// })
-
-// router.get("/trip/end", (req, res, next) => {
-//   Trip
-//   .then((tripResults) => {
-//     res.json(tripResults);
-//   })
-//   .catch((err) => {
-//     next(err)
-//   })
-// })
 
 module.exports = router
