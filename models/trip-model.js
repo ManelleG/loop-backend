@@ -36,7 +36,7 @@ tripSchema.index({endLocation: '2dsphere'})
 
 
 
-tripSchema.statics.findNear = function findNear(startCoor, endCoor){
+tripSchema.statics.findNear = function findNear(startCoor, endCoor, role){
   const startQuery =
   this.find({ startLocation: { $near: { $maxDistance: 50000, $geometry: { type: "Point", coordinates: startCoor}}}
   }).populate({path: 'user'});
@@ -49,7 +49,7 @@ tripSchema.statics.findNear = function findNear(startCoor, endCoor){
   .then((results)=>{
     const [startResults, endResults] = results;
 
-    const intersectionResults = [];
+    let intersectionResults = [];
 
     startResults.forEach((docA) => {
       endResults.forEach((docB) => {
@@ -58,6 +58,10 @@ tripSchema.statics.findNear = function findNear(startCoor, endCoor){
         }
       })
     })
+
+    intersectionResults =
+      intersectionResults.filter( tripDoc => (tripDoc.user.isDriver !== role));
+
     return intersectionResults
   })
 
