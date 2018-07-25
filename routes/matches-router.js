@@ -85,20 +85,71 @@ router.post("/trip/:tripId/matches", (req, res, next) => {
     })
 })
 
+//VIEW AN INDIVIDUAL MATCH-----------------------------------------------------------------------------
+router.get("/match/:matchId", (req, res, next) => {
+  const { matchId } = req.params;
 
-//ACCEPT A MATCH --------------------------------------------------------------------------------------
-router.put("/match/:matchId", (req, res, next) => {
-  const {matchId} = req.params;
-
-  Match.find(matchId)
+  Match.findById(matchId)
     .then((matchDoc) => {
-      if (matchDoc){}
+      res.json(matchDoc)
     })
     .catch((err) => {
-      next(err);
+      next(err)
     })
 })
 
 
+//ACCEPT/REMOVE A MATCH --------------------------------------------------------------------------------------
+router.put("/match/:matchId", (req, res, next) => {
+  const { matchId } = req.params;
+
+  const { isDriver } = req.user;
+
+  Match.findById(matchId)
+    .then((matchDoc) => {
+      const driverResValue = matchDoc.acceptedByDriver;
+      const passengerResValue = matchDoc.acceptedByPassenger;
+
+      if (isDriver){
+        Match.findByIdAndUpdate(
+          matchId,
+          {$set: {acceptedByDriver: !driverResValue}},
+          { runValidators: true, new: true}
+        )
+          .then((matchDoc) => {
+            res.json(matchDoc)
+          })
+          .catch((err) => {
+            next(err);
+          })
+        }
+        else {
+          Match.findByIdAndUpdate(
+            matchId,
+            {$set: {acceptedByPassenger: !passengerResValue}},
+            { runValidators: true, new: true}
+          )
+            .then((matchDoc) => {
+              res.json(matchDoc)
+            })
+          }
+        })
+        .catch((err) => {
+          next(err);
+        })
+})
+
+
+router.delete("/match/:matchId", (req, res, next) => {
+  const { matchId } = req.params;
+
+  Match.findByIdAndRemove(matchId)
+    .then((matchDoc) => {
+      res.json(matchDoc);
+    })
+    .catch((err) => {
+      next(err);
+    });
+})
 
 module.exports = router;
