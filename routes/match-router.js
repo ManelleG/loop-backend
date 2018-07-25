@@ -34,7 +34,10 @@ function calcUserDur(userTrip){
     console.log(err);
   });
 };
-  
+
+//USER === DRIVER
+//--------------------------------------------------------------------------------------------------------------------------------
+
 //Calculates the best match when the trip that has been submitted is a driver trip (best ABCD Trip)
 function calcBestMatchDriv(userTrip, db){
 
@@ -65,22 +68,76 @@ function calcBestMatchDriv(userTrip, db){
       //console.log("duration = ", dur/60, "min");
 
 
-      //on compare la durée de chaque trajet ABCD pour toutes les addresses B-C
+      //storing the duration of the trip inside the trip object
       db[k].dur = dur;
       db[k].response = response;
 
+      //comparing the duration of each ABCD trips for any BC waypoints
       if (dur < mindur) {
         mindur = dur;
         minresponse = response;
-        mintripID = db[k].tripID;
+        mintripID = db[k]._id;
       } 
-      // console.log(mintripID);
-      // console.log(mindur);
     })
     .catch((err) => {
       console.log('ERREUR impossible de calculer le trajet a cause de : ', err);
     });
   }
+  console.log("BEST MATCH DRIv =", mintripID);
+  console.log("BEST MATCH DRIV =", mindur);
+}
+
+//USER === PASSENGER
+//--------------------------------------------------------------------------------------------------------------------------------
+
+  
+//Calculates the best match when the trip that has been submitted is a passenger trip (best ABCD Trip)
+function calcBestMatchPass(userTrip, db){
+
+  var mindur = 99999999;
+	var minresponse;
+	var mintripID;
+  //iterating through the array of driver trips to get all the ABCD trips possible for one BC trip
+  for(let k = 0; k < db.length; k++) {
+    googleMapsClient.directions(
+      {	
+        origin: db[k].startAddress,
+        destination: db[k].endAddress,
+        waypoints: [userTrip.startAddress,userTrip.endAddress],
+        mode: "driving"
+      }
+    ).asPromise()
+    .then((response) => {
+      //console.log(response);
+
+      let dur = 0;
+      let ABCDTripPortionsArray = response.json.routes[0].legs
+
+      //for each ABCD trip, storing the total duration of the trip (by adding each portion) in seconds
+      //explanation: the response object doesnt give the total duration but only the duration for each portion, in seconds
+      for (var j = 0; j < ABCDTripPortionsArray.length; j++) {
+        dur += ABCDTripPortionsArray[j].duration.value;
+      }
+      //console.log("duration = ", dur/60, "min");
+
+
+      //storing the duration of the trip inside the trip object
+      db[k].dur = dur;
+      db[k].response = response;
+
+      //comparing the duration of each ABCD trips for any BC waypoints
+      if (dur < mindur) {
+        mindur = dur;
+        minresponse = response;
+        mintripID = db[k]._id;
+      } 
+    })
+    .catch((err) => {
+      console.log('ERREUR impossible de calculer le trajet a cause de : ', err);
+    });
+  }
+  console.log("BEST MATCH PASS =", mintripID);
+  console.log("BEST MATCH PASS =", mindur);
 }
 
 
@@ -88,27 +145,36 @@ function calcBestMatchDriv(userTrip, db){
 //FAKE VARIABLES TO TEST THE FUNCTIONS
 //------------------------------------------------------------------------------------------------------------------
 var randomUserTrip = {
-  startAddress: "48.79076259999999,2.5068955000000415",
-  endAddress: "48.8807681,2.3505747000000383"
+  startAddress: "48.827885,2.327024",
+  //petit montrouge 75014 Paris
+  endAddress: "48.872150, 2.299261"
+  //Champs elysées paris
 }
 //console.log(calcUserDur(randomUserTrip));
 
 
 var db = [{
-  tripID: 1,
-  startAddress: 
-  "48.8807681,2.3505747000000383",
-  endAddress: "48.8407592,2.3155053000000407"
+  _id: 1,
+  startAddress: "48.837016,2.297333",
+//195 rue de la convention, 75015
+  endAddress: "48.848643,2.301280"
+//Grenelle 75015 
 }, {
-  tripID: 2,
-  startAddress: "48.79076259999999,2.5068955000000415",
-  endAddress: "48.8807681,2.3505747000000383"
+  _id: 2,
+  startAddress: "48.848268,2.396545",
+  //Place de la nation, 75012
+  endAddress: "48.870577,2.388085"
+  //Belleville, 75020
 }, {
-  tripID: 3,
-  startAddress: "48.85901039999999,2.3461141000000225",
-  endAddress: "48.8412221,2.3182999000000564"}
+  _id: 3,
+  startAddress: "48.826108,2.360310",
+  //quartier de la gare 75013 
+  endAddress: "48.886932,2.304300"
+//Monceau, 75017
+}
 ];
-calcBestMatchDriv(randomUserTrip, db);
 
+calcBestMatchDriv(randomUserTrip, db);
+calcBestMatchPass(randomUserTrip, db);
 
 module.exports = router;
