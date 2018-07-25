@@ -38,54 +38,54 @@ function calcUserDur(userTrip){
 //USER === DRIVER
 //--------------------------------------------------------------------------------------------------------------------------------
 
-//Calculates the best match when the trip that has been submitted is a driver trip (best ABCD Trip)
-function calcBestMatchDriv(userTrip, db){
+// //Calculates the best match when the trip that has been submitted is a driver trip (best ABCD Trip)
+// function calcBestMatchDriv(userTrip, db){
 
-  var mindur = 99999999;
-	var minresponse;
-	var mintripID;
-  //iterating through the array of passenger trips to get all the ABCD trips possible for one AD trip
-  for(let k = 0; k < db.length; k++) {
-    googleMapsClient.directions(
-      {	
-        origin: userTrip.startAddress,
-        destination: userTrip.endAddress,
-        waypoints: [db[k].startAddress,db[k].endAddress],
-        mode: "driving"
-      }
-    ).asPromise()
-    .then((response) => {
-      //console.log(response);
+//   var mindur = 99999999;
+// 	var minresponse;
+// 	var mintripID;
+//   //iterating through the array of passenger trips to get all the ABCD trips possible for one AD trip
+//   for(let k = 0; k < db.length; k++) {
+//     googleMapsClient.directions(
+//       {	
+//         origin: userTrip.startAddress,
+//         destination: userTrip.endAddress,
+//         waypoints: [db[k].startAddress,db[k].endAddress],
+//         mode: "driving"
+//       }
+//     ).asPromise()
+//     .then((response) => {
+//       //console.log(response);
 
-      let dur = 0;
-      let ABCDTripPortionsArray = response.json.routes[0].legs
+//       let dur = 0;
+//       let ABCDTripPortionsArray = response.json.routes[0].legs
 
-      //for each ABCD trip, storing the total duration of the trip (by adding each portion) in seconds
-      //explanation: the response object doesnt give the total duration but only the duration for each portion, in seconds
-      for (var j = 0; j < ABCDTripPortionsArray.length; j++) {
-        dur += ABCDTripPortionsArray[j].duration.value;
-      }
-      //console.log("duration = ", dur/60, "min");
+//       //for each ABCD trip, storing the total duration of the trip (by adding each portion) in seconds
+//       //explanation: the response object doesnt give the total duration but only the duration for each portion, in seconds
+//       for (var j = 0; j < ABCDTripPortionsArray.length; j++) {
+//         dur += ABCDTripPortionsArray[j].duration.value;
+//       }
+//       //console.log("duration = ", dur/60, "min");
 
 
-      //storing the duration of the trip inside the trip object
-      db[k].dur = dur;
-      db[k].response = response;
+//       //storing the duration of the trip inside the trip object
+//       db[k].dur = dur;
+//       db[k].response = response;
 
-      //comparing the duration of each ABCD trips for any BC waypoints
-      if (dur < mindur) {
-        mindur = dur;
-        minresponse = response;
-        mintripID = db[k]._id;
-      } 
-    })
-    .catch((err) => {
-      console.log('ERREUR impossible de calculer le trajet a cause de : ', err);
-    });
-  }
-  console.log("BEST MATCH DRIv =", mintripID);
-  console.log("BEST MATCH DRIV =", mindur);
-}
+//       //comparing the duration of each ABCD trips for any BC waypoints
+//       if (dur < mindur) {
+//         mindur = dur;
+//         minresponse = response;
+//         mintripID = db[k]._id;
+//       } 
+//     })
+//     .catch((err) => {
+//       console.log('ERROR cant calc best match because of: ', err);
+//     });
+//   }
+//   console.log("BEST MATCH DRIv =", mintripID);
+//   console.log("BEST MATCH DRIV =", mindur);
+// }
 
 //USER === PASSENGER
 //--------------------------------------------------------------------------------------------------------------------------------
@@ -96,7 +96,8 @@ function calcBestMatchPass(userTrip, db){
 
   var mindur = 99999999;
 	var minresponse;
-	var mintripID;
+  var mintripID;
+  var BestMatchPass = {};
   //iterating through the array of driver trips to get all the ABCD trips possible for one BC trip
   for(let k = 0; k < db.length; k++) {
     googleMapsClient.directions(
@@ -121,23 +122,25 @@ function calcBestMatchPass(userTrip, db){
       //console.log("duration = ", dur/60, "min");
 
 
-      //storing the duration of the trip inside the trip object
-      db[k].dur = dur;
-      db[k].response = response;
-
       //comparing the duration of each ABCD trips for any BC waypoints
-      if (dur < mindur) {
+      while (dur < mindur) {
         mindur = dur;
-        minresponse = response;
         mintripID = db[k]._id;
+        BestMatchPass._id = mintripID;
+        BestMatchPass.dur = mindur;
       } 
+      console.log("outer while inner for BEST MATCH PASS tripID =", mintripID);
+      console.log("outer while inner for BEST MATCH PASS duration=", mindur);
+      console.log(BestMatchPass);
     })
     .catch((err) => {
-      console.log('ERREUR impossible de calculer le trajet a cause de : ', err);
+      console.log('ERROR cant calc best match because of: ', err);
     });
   }
-  console.log("BEST MATCH PASS =", mintripID);
-  console.log("BEST MATCH PASS =", mindur);
+  console.log("outer for BEST MATCH PASS tripID=", mintripID);
+  console.log("outer for BEST MATCH PASS duration=", mindur);
+  console.log(BestMatchPass);
+  //return BestMatchPass
 }
 
 
@@ -174,7 +177,7 @@ var db = [{
 }
 ];
 
-calcBestMatchDriv(randomUserTrip, db);
+//calcBestMatchDriv(randomUserTrip, db);
 calcBestMatchPass(randomUserTrip, db);
 
 module.exports = router;
