@@ -5,7 +5,7 @@ const Trip = require("../models/trip-model.js");
 
 const router = express.Router();
 
-var googleMapsClient = require('@google/maps').createClient({
+var googleMapsClient = require("@google/maps").createClient({
   key: process.env.GOOGLE_MAP_API_KEY,
   Promise: Promise
 });
@@ -120,6 +120,4 @@ var db = [{
 calcBestMatchDriv(randomUserTrip, db);
 
 
-
-
-module.exports = router
+module.exports = router;
