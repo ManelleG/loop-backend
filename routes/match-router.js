@@ -1,10 +1,11 @@
 const express = require("express");
-//const GoogleMapsAPI = require('googlemaps');
 
 const Match = require("../models/match-model.js");
 const Trip = require("../models/trip-model.js");
 
 const router = express.Router();
+
+//const GoogleMapsAPI = require('googlemaps');
 
 // const GoogleMapsAPI = require('googlemaps');
 // var publicConfig = {
@@ -17,16 +18,13 @@ var googleMapsClient = require('@google/maps').createClient({
   key: process.env.GOOGLE_MAP_API_KEY
 });
 
-var k;
+
+//var directionsService = new googleMapsClient.maps.DirectionsService();
+
 var durconducteur;
+function calcDrivDur(){
 
-
-
-var directionsService = new googleMapsClient.maps.DirectionsService();
-
-function calcDrivDur(directionsService){
-
-  directionsService.route(
+  googleMapsClient.directions(
     //1er argument de la fonction route: la requete trjat conducteur
     {	
       origin: "28 Av. des Champs-Élysées, 75008 Paris, France",
@@ -44,29 +42,8 @@ function calcDrivDur(directionsService){
   durconducteur = response.routes[0].legs[0].duration.value
 }
 
-calcDrivDur(directionsService);
+calcDrivDur(directionsService, durconducteur);
 
-
-//RETRIEVE MATCHES RELATED TO A UNIQUE TRIP ID----------------------------------------
-router.get("/trip/:tripId/matches", (req, res, next) => {
-
-  const { tripId } = req.params;
-
-  Trip.findById(tripId)
-  .populate({path: 'user'})
-  .then((result) => {
-    const { startLocation: {coordinates: startCoor}, endLocation: {coordinates: endCoor} } = result;
-    const { user: {isDriver} } = result;
-
-    return Trip.findNear(startCoor, endCoor, isDriver)
-    .then((tripResults) => {
-      res.json(tripResults);
-    })
-  })
-  .catch((err) => {
-    next(err)
-  })
-})
 
 
 

@@ -71,6 +71,9 @@ app.use("/api", tripRouter);
 const matchRouter = require("./routes/match-router");
 app.use("/api", matchRouter);
 
+const settingsRouter = require("./routes/settings.js");
+app.use("/api", settingsRouter);
+
 // AFTER your routes -> send the Angular HTML (instead of 404)
 // app.use((req, res, next) => {
 //   res.sendFile(`${__dirname}/public/index.html`);
