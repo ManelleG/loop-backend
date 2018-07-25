@@ -34,7 +34,7 @@ var db = [{
 
 function calcUserDur(){
   googleMapsClient.directions(
-    {	
+    {
       origin: "28 Av. des Champs-Élysées, 75008 Paris, France",
       destination: "20 Rue de Brigode, 59000 Lille, France",
       mode: "driving"
@@ -50,14 +50,14 @@ function calcUserDur(){
     console.log(err);
   });
 };
-  
+
 //Calculates the best match when the trip that has been submitted is a driver trip
 function calcBestMatchDriv(){
 
 //   googleMapsClient.directions(
-  
+
 //   for (k = 0, lengg = db.length; k < lengg; k++) {
-//     {	
+//     {
 //       origin: "28 Av. des Champs-Élysées, 75008 Paris, France",
 //       destination: "20 Rue de Brigode, 59000 Lille, France",
 //       waypoints: [{
@@ -82,7 +82,7 @@ function calcBestMatchDriv(){
 
 calcUserDur();
 
-
+}
 
 
 module.exports = router
