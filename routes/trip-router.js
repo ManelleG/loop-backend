@@ -129,25 +129,25 @@ router.delete("/trip/:id", (req, res, next) => {
     });
 })
 
-//RETRIEVE MATCHES RELATED TO A UNIQUE TRIP ID----------------------------------------
-router.get("/trip/:tripId/matches", (req, res, next) => {
+// //RETRIEVE MATCHES RELATED TO A UNIQUE TRIP ID----------------------------------------
+// router.get("/trip/:tripId/matches", (req, res, next) => {
 
-  const { tripId } = req.params;
+//   const { tripId } = req.params;
 
-  Trip.findById(tripId)
-  .populate({path: 'user'})
-  .then((result) => {
-    const { startLocation: {coordinates: startCoor}, endLocation: {coordinates: endCoor} } = result;
-    const { user: {isDriver} } = result;
+//   Trip.findById(tripId)
+//   .populate({path: 'user'})
+//   .then((result) => {
+//     const { startLocation: {coordinates: startCoor}, endLocation: {coordinates: endCoor} } = result;
+//     const { user: {isDriver} } = result;
 
-    return Trip.findNear(startCoor, endCoor, isDriver)
-    .then((tripResults) => {
-      res.json(tripResults);
-    })
-  })
-  .catch((err) => {
-    next(err)
-  })
-})
+//     return Trip.findNear(startCoor, endCoor, isDriver)
+//     .then((tripResults) => {
+//       res.json(tripResults);
+//     })
+//   })
+//   .catch((err) => {
+//     next(err)
+//   })
+// })
 
 module.exports = router
