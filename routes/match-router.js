@@ -13,12 +13,11 @@ var googleMapsClient = require("@google/maps").createClient({
 
 
 //DEFINITIONS:
-// AB trip = trip posted by a driver or a passenger (no waypoints)
+// AD trip = trip posted by a driver or a passenger (no waypoints)
 // ABCD trip = trip calculated by the algorithm to go from the driver's departure location to his arrival location 
 //with two stopovers to pick up and drop off passenger
 
-//Calculates the duration of the original trip posted by a user ()
-
+//Calculates the duration of the original trip posted by a user (AD trip)
 function calcUserDur(userTrip){
   googleMapsClient.directions(
     {	
@@ -36,10 +35,13 @@ function calcUserDur(userTrip){
   });
 };
   
-//Calculates the best match when the trip that has been submitted is a driver trip
+//Calculates the best match when the trip that has been submitted is a driver trip (best ABCD Trip)
 function calcBestMatchDriv(userTrip, db){
 
-  //iterating through the array of passenger trips to get all the ABCD trips possible for one AB trip
+  var mindur = 99999999;
+	var minresponse;
+	var mintripID;
+  //iterating through the array of passenger trips to get all the ABCD trips possible for one AD trip
   for(let k = 0; k < db.length; k++) {
     googleMapsClient.directions(
       {	
@@ -51,40 +53,29 @@ function calcBestMatchDriv(userTrip, db){
     ).asPromise()
     .then((response) => {
       //console.log(response);
+
       let dur = 0;
-      let ABCDTripRoutesArray = response.json.routes[0].legs
+      let ABCDTripPortionsArray = response.json.routes[0].legs
 
-      //for each ABCD trip, storing the shortest way to get to the 4 locations
-      for (var j = 0; j < ABCDTripRoutesArray.length; j++) {
-        dur += ABCDTripRoutesArray[j].duration.value;
+      //for each ABCD trip, storing the total duration of the trip (by adding each portion) in seconds
+      //explanation: the response object doesnt give the total duration but only the duration for each portion, in seconds
+      for (var j = 0; j < ABCDTripPortionsArray.length; j++) {
+        dur += ABCDTripPortionsArray[j].duration.value;
       }
-      //console.log("duration = ", dur/60);
+      //console.log("duration = ", dur/60, "min");
 
-           //boucle sur les trajets Passager pour enregistrer la ville de départ et d'arrivée du trajet Passager
-        // qui correspond à la valeur dur calculée juste au dessus
-				//for (l = 0; l < db.length; l++) {
-					// if (db[l].city1 == response.request.waypoints[0].location.query && db[l].city2 == response.request.waypoints[1].location.query) {
-					// 	console.log("found city1 " + db[l].city1);
-					// 	console.log("found city2 " + db[l].city2);
-					// 	break;
-					// }
-        //}
 
-                //on compare la durée de chaque trajet ABCD pour toutes les valeurs B et C
-				db[k].dur = dur;
-        db[k].response = response;
-        let mindur;
-				if (dur < mindur) {
-					mindur = dur;
-          minresponse = response;
-          var mintripID = db[k].tripID;
-					var mincity1 = db[k].startAddress;
-					var mincity2 = db[k].endAddress;
-        }
-        console.log(mintripID);
-        console.log(mindur);
-        console.log(mincity1);
-        console.log(mincity2);
+      //on compare la durée de chaque trajet ABCD pour toutes les addresses B-C
+      db[k].dur = dur;
+      db[k].response = response;
+
+      if (dur < mindur) {
+        mindur = dur;
+        minresponse = response;
+        mintripID = db[k].tripID;
+      } 
+      // console.log(mintripID);
+      // console.log(mindur);
     })
     .catch((err) => {
       console.log('ERREUR impossible de calculer le trajet a cause de : ', err);
