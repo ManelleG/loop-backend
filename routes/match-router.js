@@ -5,44 +5,45 @@ const Trip = require("../models/trip-model.js");
 
 const router = express.Router();
 
-//const GoogleMapsAPI = require('googlemaps');
-
-// const GoogleMapsAPI = require('googlemaps');
-// var publicConfig = {
-//   key: process.env.GOOGLE_MAP_API_KEY,
-//   secure: true, // use https
-// };
-// var gmAPI = new GoogleMapsAPI(publicConfig);
-
 var googleMapsClient = require('@google/maps').createClient({
-  key: process.env.GOOGLE_MAP_API_KEY
+  key: process.env.GOOGLE_MAP_API_KEY,
+  Promise: Promise
 });
 
 
-//var directionsService = new googleMapsClient.maps.DirectionsService();
 
-var durconducteur;
 function calcDrivDur(){
 
   googleMapsClient.directions(
-    //1er argument de la fonction route: la requete trjat conducteur
+    //1er argument de la fonction directions: la requete trajet conducteur
     {	
       origin: "28 Av. des Champs-Élysées, 75008 Paris, France",
       destination: "20 Rue de Brigode, 59000 Lille, France",
-      travelMode: googleMapsClient.maps.TravelMode.DRIVING
+      mode: "driving"
     }, 
 
-    //2e arg de la fct route: call back function qui donne le trajet conducteur 
-    function (response, status) {
-      if (status === googleMapsClient.maps.DirectionsStatus.OK) {
-        console.log(response);
-      }
-    }
-  )
-  durconducteur = response.routes[0].legs[0].duration.value
-}
+    //2e arg de la fct directions: call back function qui donne le trajet conducteur 
+    function(err, response) {
+      console.log(err);
+      console.log(response);
+       //durconducteur = response.routes[0].legs[0].duration.value
 
-calcDrivDur(directionsService, durconducteur);
+        if (!err) { 
+        callback(response.json.results.routes[0].legs[0].duration.value);
+        //console.log(response.routes[0].legs[0].duration.value)
+        };
+    }
+  );
+};
+  
+ var input = {
+  origin: "28 Av. des Champs-Élysées, 75008 Paris, France",
+  destination: "20 Rue de Brigode, 59000 Lille, France",
+  mode: "driving"
+ }
+
+
+calcDrivDur();
 
 
 
