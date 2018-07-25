@@ -69,4 +69,22 @@ router.put("/settings", uploader.single("pictureUpload"), (req, res, next) => {
     });
 });
 
+router.put("/addCar", (req, res, next) => {
+  const car = {
+    brand: req.body.brand,
+    model: req.body.model,
+    color: req.body.color,
+    licensePlate: req.body.licensePlate,
+    numberOfSeats: req.body.numberOfSeats
+  };
+
+  User.findByIdAndUpdate(req.user._id, { $push: { cars: car } }, { new: true })
+    .then(userDoc => {
+      res.json(userDoc);
+    })
+    .catch(err => {
+      next(err);
+    });
+});
+
 module.exports = router;
