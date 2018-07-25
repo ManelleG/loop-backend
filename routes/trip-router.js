@@ -129,7 +129,7 @@ router.delete("/trip/:id", (req, res, next) => {
     });
 })
 
-//RETRIEVE MATCHES RELATED TO A UNIQUE TRIP ID----------------------------------------
+// //RETRIEVE MATCHES RELATED TO A UNIQUE TRIP ID----------------------------------------
 router.get("/trip/:tripId/matches", (req, res, next) => {
 
   const { tripId } = req.params;
@@ -142,6 +142,9 @@ router.get("/trip/:tripId/matches", (req, res, next) => {
 
     return Trip.findNear(startCoor, endCoor, isDriver)
     .then((tripResults) => {
+      tripResults.forEach((tripDoc) => {
+        tripDoc.user.encryptedPassword = undefined;
+      })
       res.json(tripResults);
     })
   })

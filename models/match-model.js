@@ -13,8 +13,8 @@ const matchSchema = new Schema({
     ref: "Trip",
     required: true
   },
-  acceptedByDriver: { type: Boolean },
-  acceptedByPassenger: { type: Boolean }
+  acceptedByDriver: { type: Boolean, default: false },
+  acceptedByPassenger: { type: Boolean, default: false }
 }, {
   timestamps: true
 });
