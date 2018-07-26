@@ -68,9 +68,6 @@ app.use("/api", authRouter);
 const tripRouter = require("./routes/trip-router.js");
 app.use("/api", tripRouter);
 
-const matchRouter = require("./routes/match-router");
-app.use("/api", matchRouter);
-
 const matchesRouter = require("./routes/matches-router.js");
 app.use("/api", matchesRouter);
 
