@@ -18,13 +18,21 @@ router.get("/matches", (req, res, next) => {
       .populate({
         path: "driverTripId",
         match: {"user": req.user._id},
-        select: "user"
+        // select: {"user": "_id"}
+        })
+      .populate({
+        path: "passengerTripId",
+        populate: { path: "user" }
         })
       .then((results) =>{
         endResult = results;
 
         endResult =
         endResult.filter(matchDoc => (matchDoc.driverTripId && matchDoc.passengerTripId));
+
+        endResult.forEach((matchDoc) => {
+          matchDoc.passengerTripId.user.encryptedPassword = undefined;
+        })
 
         res.json(endResult)
       })
@@ -36,13 +44,20 @@ router.get("/matches", (req, res, next) => {
     Match.find()
     .populate({path: "passengerTripId",
       match: {"user": req.user._id},
-      select: "user"
       })
+      .populate({
+        path: "driverTripId",
+        populate: { path: "user" }
+        })
     .then((results) =>{
       endResult = results;
 
       endResult =
         endResult.filter(matchDoc => (matchDoc.driverTripId && matchDoc.passengerTripId));
+
+      endResult.forEach((matchDoc) => {
+        matchDoc.driverTripId.user.encryptedPassword = undefined;
+      })
 
         res.json(endResult)
     })
@@ -84,6 +99,7 @@ router.post("/trip/:tripId/matches", (req, res, next) => {
       next(err);
     })
 })
+
 
 //VIEW AN INDIVIDUAL MATCH-----------------------------------------------------------------------------
 router.get("/match/:matchId", (req, res, next) => {
