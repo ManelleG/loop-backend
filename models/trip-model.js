@@ -38,11 +38,11 @@ tripSchema.index({endLocation: '2dsphere'})
 
 tripSchema.statics.findNear = function findNear(startCoor, endCoor, role){
   const startQuery =
-  this.find({ startLocation: { $near: { $maxDistance: 50000, $geometry: { type: "Point", coordinates: startCoor}}}
+  this.find({ startLocation: { $near: { $maxDistance: 100000, $geometry: { type: "Point", coordinates: startCoor}}}
   }).populate({path: 'user'});
 
   const endQuery =
-  this.find({ endLocation: { $near: { $maxDistance: 50000, $geometry: { type: "Point", coordinates: endCoor}}}
+  this.find({ endLocation: { $near: { $maxDistance: 100000, $geometry: { type: "Point", coordinates: endCoor}}}
   }).populate({path: 'user'});
 
   return Promise.all([startQuery, endQuery])
