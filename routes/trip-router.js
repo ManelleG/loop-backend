@@ -18,6 +18,7 @@ const router = express.Router();
 // CURRENT USER TRIPS -----------------------------------------------------------------------
 router.get("/trips", (req, res, next) => {
   Trip.find( {user: req.user._id} )
+  .sort({createdAt: -1})
   .then((tripResults) => {
     res.json(tripResults)
   })
