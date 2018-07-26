@@ -32,14 +32,24 @@ const tripSchema = new Schema(
 tripSchema.index({ startLocation: "2dsphere" });
 tripSchema.index({ endLocation: "2dsphere" });
 
-tripSchema.statics.findNear = function findNear(startCoor, endCoor, role) {
+tripSchema.statics.findNear = function findNear(
+  startCoor,
+  endCoor,
+  role,
+  time
+) {
+  const timeFrame = 180;
+  const timeBefore = new Date(time.getTime() - timeFrame * 60000);
+  const timeAfter = new Date(time.getTime() + timeFrame * 60000);
+
   const startQuery = this.find({
     startLocation: {
       $near: {
         $maxDistance: 100000,
         $geometry: { type: "Point", coordinates: startCoor }
       }
-    }
+    },
+    departDateAndTime: { $gte: timeBefore, $lte: timeAfter }
   }).populate({ path: "user" });
 
   const endQuery = this.find({

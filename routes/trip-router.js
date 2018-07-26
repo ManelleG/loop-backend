@@ -139,9 +139,9 @@ router.get("/trip/:tripId/matches", (req, res, next) => {
   .populate({path: 'user'})
   .then((result) => {
     const { startLocation: {coordinates: startCoor}, endLocation: {coordinates: endCoor} } = result;
-    const { user: {isDriver} } = result;
+    const { user: {isDriver}, departDateAndTime } = result;
 
-    return Trip.findNear(startCoor, endCoor, isDriver)
+    return Trip.findNear(startCoor, endCoor, isDriver, departDateAndTime)
     .then((tripResults) => {
       tripResults.forEach((tripDoc) => {
         tripDoc.user.encryptedPassword = undefined;
