@@ -95,6 +95,8 @@ function calcUserDur(userTrip){
 function calcBestMatchPass(userTrip, db){
 
   var mindur = 99999999;
+  var counter = 0;
+  var total = db.length;
 	var minresponse;
   var mintripID;
   var BestMatchPass = {};
@@ -109,7 +111,9 @@ function calcBestMatchPass(userTrip, db){
       }
     ).asPromise()
     .then((response) => {
-      //console.log(response);
+      console.log("K =", k);
+      counter ++;
+      console.log("counter = ", counter);
 
       let dur = 0;
       let ABCDTripPortionsArray = response.json.routes[0].legs
@@ -119,32 +123,22 @@ function calcBestMatchPass(userTrip, db){
       for (var j = 0; j < ABCDTripPortionsArray.length; j++) {
         dur += ABCDTripPortionsArray[j].duration.value;
       }
-      //console.log("duration = ", dur/60, "min");
-
-        //          boucle sur les trajets Passager pour enregistrer la ville de départ et d'arrivée du trajet Passager
-        // qui correspond à la valeur dur calculée juste au dessus
-				for (l = 0; l < db.length; l++) {
-					if (db[l].startAddress == response.query.waypoints[0] && db[l].endAddress == response.query.waypoints[1]) {
-						console.log("found city1 " + db[l].startAddress);
-						console.log("found city2 " + db[l].endAddress);
-						break;
-					}
-        }
-
-        db[l].dur = dur;
-        db[l].response = response;
-
+      //console.log("duration = ", dur/60, "min")
+ 
 
       //comparing the duration of each ABCD trips for any BC waypoints
       if (dur < mindur) {
         mindur = dur;
-        mintripID = db[l]._id;
+        mintripID = db[k]._id;
         BestMatchPass._id = mintripID;
         BestMatchPass.dur = mindur;
       } 
       console.log("outer while inner for BEST MATCH PASS tripID =", mintripID);
       console.log("outer while inner for BEST MATCH PASS duration=", mindur);
       console.log(BestMatchPass);
+      if (counter === total){
+        console.log("final best match =", mintripID)
+      }
     })
     .catch((err) => {
       console.log('ERROR cant calc best match because of: ', err);
@@ -153,7 +147,6 @@ function calcBestMatchPass(userTrip, db){
   console.log("outer for BEST MATCH PASS tripID=", mintripID);
   console.log("outer for BEST MATCH PASS duration=", mindur);
   console.log(BestMatchPass);
-  //return BestMatchPass
 }
 
 
@@ -161,6 +154,7 @@ function calcBestMatchPass(userTrip, db){
 //FAKE VARIABLES TO TEST THE FUNCTIONS
 //------------------------------------------------------------------------------------------------------------------
 var randomUserTrip = {
+  _id: 8,
   startAddress: "48.827885,2.327024",
   //petit montrouge 75014 Paris
   endAddress: "48.872150, 2.299261"
@@ -189,7 +183,7 @@ var db = [{
 //Monceau, 75017
 }
 ];
-
+ 
 //calcBestMatchDriv(randomUserTrip, db);
 calcBestMatchPass(randomUserTrip, db);
 
