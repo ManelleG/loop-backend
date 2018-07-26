@@ -36,7 +36,7 @@ tripSchema.statics.findNear = function findNear(startCoor, endCoor, role) {
   const startQuery = this.find({
     startLocation: {
       $near: {
-        $maxDistance: 50000,
+        $maxDistance: 100000,
         $geometry: { type: "Point", coordinates: startCoor }
       }
     }
@@ -45,7 +45,7 @@ tripSchema.statics.findNear = function findNear(startCoor, endCoor, role) {
   const endQuery = this.find({
     endLocation: {
       $near: {
-        $maxDistance: 50000,
+        $maxDistance: 100000,
         $geometry: { type: "Point", coordinates: endCoor }
       }
     }

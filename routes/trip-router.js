@@ -1,5 +1,6 @@
 const express = require("express");
 const Trip = require("../models/trip-model.js");
+const calcBestMatch = require("../googlemaps/GMsetup");
 
 const router = express.Router();
 
@@ -145,12 +146,15 @@ router.get("/trip/:tripId/matches", (req, res, next) => {
       tripResults.forEach((tripDoc) => {
         tripDoc.user.encryptedPassword = undefined;
       })
-      res.json(tripResults);
-    })
+      return calcBestMatch(isDriver, result, tripResults)
+      .then((matchResult)=> {
+        res.json(matchResult)
+      });
+    });
   })
   .catch((err) => {
     next(err)
-  })
-})
+  });
+});
 
 module.exports = router
