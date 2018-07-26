@@ -35,62 +35,6 @@ function calcUserDur(userTrip){
   });
 };
 
-//USER === DRIVER
-//--------------------------------------------------------------------------------------------------------------------------------
-
-// //Calculates the best match when the trip that has been submitted is a driver trip (best ABCD Trip)
-// function calcBestMatchDriv(userTrip, db){
-
-//   var mindur = 99999999;
-// 	var minresponse;
-// 	var mintripID;
-//   //iterating through the array of passenger trips to get all the ABCD trips possible for one AD trip
-//   for(let k = 0; k < db.length; k++) {
-//     googleMapsClient.directions(
-//       {
-//         origin: userTrip.startAddress,
-//         destination: userTrip.endAddress,
-//         waypoints: [db[k].startAddress,db[k].endAddress],
-//         mode: "driving"
-//       }
-//     ).asPromise()
-//     .then((response) => {
-//       //console.log(response);
-
-//       let dur = 0;
-//       let ABCDTripPortionsArray = response.json.routes[0].legs
-
-//       //for each ABCD trip, storing the total duration of the trip (by adding each portion) in seconds
-//       //explanation: the response object doesnt give the total duration but only the duration for each portion, in seconds
-//       for (var j = 0; j < ABCDTripPortionsArray.length; j++) {
-//         dur += ABCDTripPortionsArray[j].duration.value;
-//       }
-//       //console.log("duration = ", dur/60, "min");
-
-
-//       //storing the duration of the trip inside the trip object
-//       db[k].dur = dur;
-//       db[k].response = response;
-
-//       //comparing the duration of each ABCD trips for any BC waypoints
-//       if (dur < mindur) {
-//         mindur = dur;
-//         minresponse = response;
-//         mintripID = db[k]._id;
-//       }
-//     })
-//     .catch((err) => {
-//       console.log('ERROR cant calc best match because of: ', err);
-//     });
-//   }
-//   console.log("BEST MATCH DRIv =", mintripID);
-//   console.log("BEST MATCH DRIV =", mindur);
-// }
-
-//USER === PASSENGER
-//--------------------------------------------------------------------------------------------------------------------------------
-
-
 //Calculates the best match when the trip that has been submitted is a passenger trip (best ABCD Trip)
 function calcBestMatch(isDriver, userTrip, db){
 
@@ -139,19 +83,13 @@ function calcBestMatch(isDriver, userTrip, db){
           BestMatchPass.trip = db[k];
           BestMatchPass.dur = mindur;
         }
-        console.log("outer while inner for BEST MATCH PASS tripID =", mintripID);
-        console.log("outer while inner for BEST MATCH PASS duration=", mindur);
-        console.log(BestMatchPass);
-        if (counter === total){
-          console.log("final best match =", mintripID)
-        }
+
       });
     });
 
   return Promise.all(googleRequests)
     .then(() => {
-      console.log("outer for BEST MATCH PASS tripID=", mintripID);
-      console.log("outer for BEST MATCH PASS duration=", mindur);
+      console.log("final best match =", mintripID)
       return BestMatchPass;
     });
 }
@@ -164,7 +102,7 @@ var randomUserTrip = {
   _id: 8,
   startAddress: "48.827885,2.327024",
   //petit montrouge 75014 Paris
-  endAddress: "48.872150, 2.299261"
+  endAddress: "48.872150,2.299261"
   //Champs elysées paris
 }
 //console.log(calcUserDur(randomUserTrip));
@@ -191,6 +129,6 @@ var db = [{
 }
 ];
 
-// calcBestMatch("driver", randomUserTrip, db÷;
+calcBestMatch(false, randomUserTrip, db);
 
 module.exports = calcBestMatch;
