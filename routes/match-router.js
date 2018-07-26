@@ -121,11 +121,24 @@ function calcBestMatchPass(userTrip, db){
       }
       //console.log("duration = ", dur/60, "min");
 
+        //          boucle sur les trajets Passager pour enregistrer la ville de départ et d'arrivée du trajet Passager
+        // qui correspond à la valeur dur calculée juste au dessus
+				for (l = 0; l < db.length; l++) {
+					if (db[l].startAddress == response.query.waypoints[0] && db[l].endAddress == response.query.waypoints[1]) {
+						console.log("found city1 " + db[l].startAddress);
+						console.log("found city2 " + db[l].endAddress);
+						break;
+					}
+        }
+
+        db[l].dur = dur;
+        db[l].response = response;
+
 
       //comparing the duration of each ABCD trips for any BC waypoints
-      while (dur < mindur) {
+      if (dur < mindur) {
         mindur = dur;
-        mintripID = db[k]._id;
+        mintripID = db[l]._id;
         BestMatchPass._id = mintripID;
         BestMatchPass.dur = mindur;
       } 
