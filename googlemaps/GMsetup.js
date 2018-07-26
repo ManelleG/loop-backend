@@ -129,6 +129,6 @@ var db = [{
 }
 ];
 
-calcBestMatch(false, randomUserTrip, db);
+// calcBestMatch(false, randomUserTrip, db);
 
 module.exports = calcBestMatch;
