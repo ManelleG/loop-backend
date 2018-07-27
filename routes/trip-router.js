@@ -73,6 +73,7 @@ router.get("/trip/:id", (req, res, next) => {
   Trip.findById(id)
   .populate({path: 'user'})
     .then((tripDoc) => {
+      tripDoc.user.encryptedPassword = undefined;
       res.json(tripDoc)
     })
     .catch((err) => {
