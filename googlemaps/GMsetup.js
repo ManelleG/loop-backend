@@ -49,10 +49,10 @@ function calcBestMatch(isDriver, userTrip, db){
     db.map((item, k) => {
       var options = isDriver
         ? {
-              origin: [userTrip.startLocation.coordinates[1],userTrip.startLocation.coordinates[0]],
-              destination: [userTrip.endLocation.coordinates[1],userTrip.endLocation.coordinates[0]],
-              waypoints: [[db[k].startLocation.coordinates[1],db[k].startLocation.coordinates[0]],[db[k].endLocation.coordinates[1],db[k].endLocation.coordinates[0]]],
-              mode: "driving"
+          origin: [userTrip.startLocation.coordinates[1],userTrip.startLocation.coordinates[0]],
+          destination: [userTrip.endLocation.coordinates[1],userTrip.endLocation.coordinates[0]],
+          waypoints: [[db[k].startLocation.coordinates[1],db[k].startLocation.coordinates[0]],[db[k].endLocation.coordinates[1],db[k].endLocation.coordinates[0]]],
+          mode: "driving"
         } : {
           origin: [db[k].startLocation.coordinates[1],db[k].startLocation.coordinates[0]],
           destination: [db[k].endLocation.coordinates[1],db[k].endLocation.coordinates[0]],
