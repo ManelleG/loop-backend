@@ -18,6 +18,7 @@ const router = express.Router();
 // CURRENT USER TRIPS -----------------------------------------------------------------------
 router.get("/trips", (req, res, next) => {
   Trip.find( {user: req.user._id} )
+  .sort({createdAt: -1})
   .then((tripResults) => {
     res.json(tripResults)
   })
@@ -71,6 +72,7 @@ router.get("/trip/:id", (req, res, next) => {
   Trip.findById(id)
   .populate({path: 'user'})
     .then((tripDoc) => {
+      tripDoc.user.encryptedPassword = undefined;
       res.json(tripDoc)
     })
     .catch((err) => {
@@ -138,9 +140,9 @@ router.get("/trip/:tripId/matches", (req, res, next) => {
   .populate({path: 'user'})
   .then((result) => {
     const { startLocation: {coordinates: startCoor}, endLocation: {coordinates: endCoor} } = result;
-    const { user: {isDriver} } = result;
+    const { user: {isDriver}, departDateAndTime } = result;
 
-    return Trip.findNear(startCoor, endCoor, isDriver)
+    return Trip.findNear(startCoor, endCoor, isDriver, departDateAndTime)
     .then((tripResults) => {
       tripResults.forEach((tripDoc) => {
         tripDoc.user.encryptedPassword = undefined;
