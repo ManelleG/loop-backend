@@ -17,7 +17,7 @@ const userSchema = new Schema(
     encryptedPassword: { type: String },
     pictureURL: {
       type: String,
-      default: ""
+      default: "https://image.flaticon.com/icons/svg/149/149072.svg"
     },
     gender: {
       type: String,

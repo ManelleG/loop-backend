@@ -3,6 +3,8 @@ const Match = require("../models/match-model.js")
 const User = require("../models/user-model.js")
 const Trip = require("../models/trip-model.js")
 
+var ObjectId = require('mongoose').Types.ObjectId;
+
 const router = express.Router();
 
 
@@ -115,11 +117,11 @@ router.get("/match/:matchId", (req, res, next) => {
 })
 
 //SEARCH STATUS OF A TRIP IN RELATION TO MATCHES -------------------------------------------------------
-router.get("/match/check/:tripId", (req, res, next) => {
+router.get("/match/:tripId/status", (req, res, next) => {
   const { tripId } = req.params;
 
-  Match.find()
-    .or([{passengerTripId: tripId}, {driverTripId: tripId}])
+  Match.findOne()
+    .or([{passengerTripId: ObjectId(tripId)}, {driverTripId: ObjectId(tripId)}])
     .then((matchDoc) => {
       res.json(matchDoc)
     })
