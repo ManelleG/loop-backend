@@ -45,8 +45,7 @@ router.post("/trips", (req, res, next) => {
   const departDateAndTime = `${departDate} ${departHour}:${departMin}:00`;
   const startLocation = {string: startAddress, coordinates: [startLongitude, startLatitude] }
   const endLocation = {string: endAddress, coordinates: [endLongitude, endLatitude] }
-  //const startLocation = {string: startAddress};
-  //const endLocation = {string: endAddress}
+
 
   Trip.create({
     user: req.user._id,
