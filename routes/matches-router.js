@@ -114,6 +114,20 @@ router.get("/match/:matchId", (req, res, next) => {
     })
 })
 
+//SEARCH STATUS OF A TRIP IN RELATION TO MATCHES -------------------------------------------------------
+router.get("/match/check/:tripId", (req, res, next) => {
+  const { tripId } = req.params;
+
+  Match.find()
+    .or([{passengerTripId: tripId}, {driverTripId: tripId}])
+    .then((matchDoc) => {
+      res.json(matchDoc)
+    })
+    .catch((err) => {
+      next(err)
+    })
+})
+
 
 //ACCEPT/REMOVE A MATCH --------------------------------------------------------------------------------------
 router.put("/match/:matchId", (req, res, next) => {
