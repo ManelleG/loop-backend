@@ -1,7 +1,6 @@
 const express = require("express");
 const Match = require("../models/match-model.js")
 const User = require("../models/user-model.js")
-const Trip = require("../models/trip-model.js")
 
 var ObjectId = require('mongoose').Types.ObjectId;
 

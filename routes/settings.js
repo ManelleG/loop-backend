@@ -1,6 +1,5 @@
 const express = require("express");
 const bcrypt = require("bcrypt");
-const bodyparser = require("body-parser");
 const multer = require("multer");
 const cloudinary = require("cloudinary");
 const cloudinaryStorage = require("multer-storage-cloudinary");

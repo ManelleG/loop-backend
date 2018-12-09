@@ -1,6 +1,6 @@
 const express = require("express");
 const Trip = require("../models/trip-model.js");
-const calcBestMatch = require("../googlemaps/GMsetup");
+const calcBestMatch = require("../googlemaps/matching-algo");
 
 const router = express.Router();
 
@@ -38,8 +38,7 @@ router.post("/trips", (req, res, next) => {
     departDate,
     departHour,
     departMin,
-    comment,
-  //numberOfSeats
+    comment
   } = req.body;
 
   //Data reformating to make the data the user entered fit the user model:
@@ -53,8 +52,7 @@ router.post("/trips", (req, res, next) => {
     startLocation,
     endLocation,
     departDateAndTime,
-    comment,
-   // numberOfSeats
+    comment
   })
   .then((tripDoc) => {
     res.json(tripDoc);
@@ -70,7 +68,7 @@ router.get("/trip/:id", (req, res, next) => {
   const { id } = req.params;
 
   Trip.findById(id)
-  .populate({path: 'user'})
+    .populate({path: 'user'})
     .then((tripDoc) => {
       tripDoc.user.encryptedPassword = undefined;
       res.json(tripDoc)
@@ -80,7 +78,7 @@ router.get("/trip/:id", (req, res, next) => {
     })
 })
 
-// UPDATE A SPECIFIC TRIPS --------------------------------------------------------------
+// UPDATE A SPECIFIC TRIP --------------------------------------------------------------
 router.put("/trip/:id", (req, res, next) => {
   const { id } = req.params;
 
@@ -131,7 +129,7 @@ router.delete("/trip/:id", (req, res, next) => {
     });
 })
 
-// //RETRIEVE MATCHES RELATED TO A UNIQUE TRIP ID----------------------------------------
+// RETRIEVE MATCHES RELATED TO A UNIQUE TRIP ID----------------------------------------
 router.get("/trip/:tripId/matches", (req, res, next) => {
 
   const { tripId } = req.params;

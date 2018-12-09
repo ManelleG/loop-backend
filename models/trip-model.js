@@ -20,7 +20,6 @@ const tripSchema = new Schema(
       coordinates: [{ type: Number }]
     },
     departDateAndTime: { type: Date, required: true },
-    // departTime: { type: String, required: true},
     comment: { type: String },
     numberOfSeats: { type: Number }
   },
