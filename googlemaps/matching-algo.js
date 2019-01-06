@@ -30,11 +30,11 @@ function calcUserDur(userTrip){
 
 function calcBestMatch(isDriver, userTrip, db){
 
-  let minDur = 99999999;
+  let minDur = Number.MAX_VALUE;
   const bestMatch = {};
 
   //for each trip in the array, we ask google map for the duration of the ABCD trip
-  var googleRequests =
+  const googleRequests =
     db.map(currentTrip => {
 
       const userStartLat = userTrip.startLocation.coordinates[1];
@@ -100,7 +100,7 @@ function calcBestMatch(isDriver, userTrip, db){
 
 //FAKE VARIABLES TO TEST THE FUNCTIONS
 //------------------------------------------------------------------------------------------------------------------
-var randomUserTrip = {
+const randomUserTrip = {
   _id: 8,
   startLocation: {
     coordinates: [2.327024, 48.827885]
@@ -114,7 +114,7 @@ var randomUserTrip = {
 //console.log(calcUserDur(randomUserTrip));
 
 
-var db = [{
+const db = [{
     _id: 1,
     startLocation: {
       coordinates: [2.297333, 48.837016]
