@@ -5,15 +5,15 @@ const calcBestMatch = require("../googlemaps/matching-algo");
 const router = express.Router();
 
 // GET ALL TRIPS IN DB -----------------------------------------------------------------------
-router.get("/trips/all", (req, res, next) => {
-  Trip.find()
-  .then((tripResults) => {
-    res.json(tripResults);
-  })
-  .catch((err) => {
-    next(err);
-  });
-});
+// router.get("/trips/all", (req, res, next) => {
+//   Trip.find()
+//   .then((tripResults) => {
+//     res.json(tripResults);
+//   })
+//   .catch((err) => {
+//     next(err);
+//   });
+// });
 
 // CURRENT USER TRIPS -----------------------------------------------------------------------
 router.get("/trips", (req, res, next) => {
